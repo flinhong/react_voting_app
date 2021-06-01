@@ -3,19 +3,34 @@ import React from 'react';
 import products from './seed';
 
 export class ProductList extends React.Component {
-  constructor(props) {
-    super(props);
+  // constructor(props) {
+  //   super(props);
 
-    this.state = {
-      products: []
-    }
-  }
+  //   this.state = {
+  //     products: []
+  //   };
+
+  //   this.handleProductUpVote = this.handleProductUpVote.bind(this);
+  // }
+
+  state = { products: [] };
+
   componentDidMount() {
-    this.setState({ products })
+    this.setState({ products });
   }
-  handleProductUpVote(productID) {
-    console.log('voted');
+
+  handleProductUpVote = (productID) => {
+    const newProducts = this.state.products.map(product => {
+      if (product.id === productID) {
+        return Object.assign({}, product, { votes: product.votes + 1 });
+      } else {
+        return product;
+      }
+    });
+
+    this.setState({ products: newProducts });
   }
+
   render() {
     const productsSorted = this.state.products.sort((a, b) => (b.votes - a.votes));
     const productComponents = productsSorted.map(product => {
@@ -42,15 +57,17 @@ export class ProductList extends React.Component {
 }
 
 class Product extends React.Component {
-  constructor(props) {
-    super(props); // always call this first
+  // constructor(props) {
+  //   super(props); // always call this first
 
-    // custom method bindings below
-    this.handleUpVote = this.handleUpVote.bind(this);
+  //   // custom method bindings below
+  //   this.handleUpVote = this.handleUpVote.bind(this);
+  // }
+
+  handleUpVote = () => {
+    return this.props.onVote(this.props.id);
   }
-  handleUpVote() {
-    this.props.onVote(this.props.id);
-  }
+
   render() {
     return (
       <div className="item">
